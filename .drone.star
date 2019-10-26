@@ -9,7 +9,10 @@ def pipeline(arch):
   return {
     "kind": "pipeline",
     "type": "docker",
-    "name": "default" + arch,
+    "name": "default-" + arch,
+    "platform": {
+      "arch": arch
+    },
     "steps": [
       {
         "name": "build",
