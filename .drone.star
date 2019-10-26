@@ -36,7 +36,7 @@ def pipeline(arch):
           },
           "password": {
             "from_secret": "docker_password"
-          }
+          },
           "repo": "yaamai/nfs-client-provisioner",
           "auto_tag": True,
           "auto_tag_suffix": "${DRONE_STAGE_ARCH}",
