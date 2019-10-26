@@ -1,0 +1,50 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git
+  commands:
+  - mkdir -p /drone/src/$DRONE_REPO_NAMESPACE/$DRONE_REPO_NAME
+  - cd /drone/src/$DRONE_REPO_NAMESPACE/$DRONE_REPO_NAME
+  - git init
+  - git remote add origin $DRONE_GIT_HTTP_URL
+  - "git fetch origin +refs/heads/master:"
+  - git checkout $DRONE_COMMIT -b master
+
+- name: build
+  image: golang:1.13
+  environment:
+    CGO_ENABLED: 0
+    GOOS: linux
+    GOPATH: /drone
+  commands:
+  - mkdir -p /drone/bin
+  - go get -u github.com/golang/dep/cmd/dep
+#  - go get -u github.com/bazelbuild/buildtools/buildifier
+#  - go install github.com/bazelbuild/buildifier/buildifier
+  - cd /drone/src/$DRONE_REPO_NAMESPACE/$DRONE_REPO_NAME
+  - ls
+  - git log -3
+  - git status
+  - git remote -v
+  - /drone/bin/dep version
+  - /drone/bin/dep ensure
+  - cd nfs-client
+  - go build -a -ldflags '-extldflags "-static"' -o docker/${DRONE_STAGE_ARCH}/nfs-client-provisioner ./cmd/nfs-client-provisioner
+- name: image-build
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    repo: yaamai/nfs-client-provisioner
+    auto_tag: true
+    auto_tag_suffix: ${DRONE_STAGE_ARCH}
