@@ -29,4 +29,4 @@ steps:
     auto_tag: true
     auto_tag_suffix: ${DRONE_STAGE_ARCH}
     dockerfile: nfs-client/docker/${DRONE_STAGE_ARCH}/Dockerfile
-    context: nfs-client
+    context: nfs-client/docker/${DRONE_STAGE_ARCH}
