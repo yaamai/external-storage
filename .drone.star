@@ -1,10 +1,10 @@
+TARGET_ARCH_LIST = ["amd64", "arm64", "arm"]
+
 def main(ctx):
-  return [
-    pipeline("amd64"),
-    pipeline("arm64"),
-    pipeline("arm"),
-    docker_manifest(),
-  ]
+  pipeline_list = []
+  pipeline_list.extend([pipeline(arch) for arch in TARGET_ARCH_LIST])
+  pipeline_list.append(docker_manifest())
+  return pipeline_list
 
 def pipeline(arch):
   return {
@@ -76,5 +76,6 @@ def docker_manifest():
           ]
         }
       }
-    ]
+    ],
+    "depends_on": ["default-" + arch for arch in TARGET_ARCH_LIST]
   }
