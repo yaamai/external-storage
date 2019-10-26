@@ -55,6 +55,7 @@ def docker_manifest():
   return {
     "kind": "pipeline",
     "type": "docker",
+    "name": "manifest",
     "steps": [
       {
         "name": "push-manifest",
