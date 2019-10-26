@@ -2,7 +2,8 @@ def main(ctx):
   return [
     pipeline("amd64"),
     pipeline("arm64"),
-    pipeline("arm")
+    pipeline("arm"),
+    docker_manifest(),
   ]
 
 def pipeline(arch):
@@ -50,3 +51,29 @@ def pipeline(arch):
     ]
   }
 
+def docker_manifest():
+  return {
+    "kind": "pipeline",
+    "type": "docker",
+    "steps": [
+      {
+        "name": "push-manifest",
+        "image": "plugins/manifest",
+        "settings": {
+          "username": {
+            "from_secret": "docker_username"
+          },
+          "password": {
+            "from_secret": "docker_password"
+          },
+          "target": "yaamai/nfs-client-provisioner:latest",
+          "template": "yaamai/nfs-client-provisioner:ARCH",
+          "platforms": [
+            "linux/amd64",
+            "linux/arm",
+            "linux/arm64"
+          ]
+        }
+      }
+    ]
+  }
