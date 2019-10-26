@@ -1,5 +1,3 @@
-
-
 def main(ctx):
   return [
     pipeline("amd64"),
