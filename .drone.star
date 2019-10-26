@@ -24,7 +24,7 @@ def pipeline(arch):
           "git status",
           "git remote -v",
           "cd nfs-client",
-          "go build -a -ldflags '-extldflags "-static"' -o docker/${DRONE_STAGE_ARCH}/nfs-client-provisioner ./cmd/nfs-client-provisioner"
+          "go build -a -ldflags '-extldflags \"-static\"' -o docker/${DRONE_STAGE_ARCH}/nfs-client-provisioner ./cmd/nfs-client-provisioner"
         ]
       },
       {
